@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import { ExtendedClient } from './types/extendedClient.js';
 import { 
-    GatewayIntentBits,    
+    Events,
+    GatewayIntentBits,
 } from "discord.js";
-import { messageResponse } from './listeners/message.js';
 import fs from 'fs';
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
@@ -33,19 +33,43 @@ const client = new ExtendedClient({
 //     }
 // }
 
-const commandFolders = fs.readdirSync(__dirname+"/commands").filter((folder)=>fs.lstatSync(`${__dirname+"/commands"}/${folder}`).isDirectory());
-console.log("command folders:",commandFolders)
+const commandFolders = fs.readdirSync(__dirname+"/commands").filter((folder)=>fs.lstatSync(`${__dirname}/commands/${folder}`).isDirectory());
+
 for(const folder of commandFolders){
     const commandFiles = fs.readdirSync(__dirname+`/commands/${folder}`).filter(file => file.endsWith('.js'));
     for(const file of commandFiles){
-        // const command = await import(`./commads/${folder}/${file}`)
-
+        const command = await import(`./commands/${folder}/${file}`)
+        if ('data' in command && 'execute' in command) {
+			client.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${`./commands/${folder}/${file}`} is missing a required "data" or "execute" property.`);
+		}
     }
 }
 
 
-client.on("interactionCreate", async (interaction) => {
-    // Handle interactions here
+client.on(Events.InteractionCreate, async (interaction) => {
+    
+    if(!interaction.isCommand()){return}
+
+    const command = client.commands.get(interaction.commandName)
+
+	if (!command) {
+		console.error(`No command matching ${interaction.commandName} was found.`);
+		return;
+	}
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		if (interaction.replied || interaction.deferred) {
+			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+		} else {
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	}
+
 });
 
 const token = process.env.DISCORD_TOKEN;
