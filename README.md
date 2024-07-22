@@ -1,3 +1,3 @@
 ### freaky-discord-bot
 
-discord bot for my hangout server.
+discord bot for my private hangout server.

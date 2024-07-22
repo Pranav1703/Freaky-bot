@@ -19,11 +19,11 @@ export function messageResponse(message: Message<boolean>){
                 })
                 break;
             
-            case "BetterCallBashu":
+            case "73.53.2532.53.01":
                 message.reply({
                     content:`
                         Remainder!
-                        u need to install finish elden ring dlc.
+                        u need to install and finish elden ring dlc.
                     `
                 })
                 break;
