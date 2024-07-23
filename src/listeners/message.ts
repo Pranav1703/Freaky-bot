@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 
-
+//currently not using.
 export function messageResponse(message: Message<boolean>){
     if(!message.author.bot){
         
