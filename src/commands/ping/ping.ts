@@ -62,7 +62,8 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
         default:
             const resp = await interaction.reply({
-                content: `pinging...`
+                content: `pinging...`,
+                fetchReply: true
                 
             })
             interaction.editReply({
