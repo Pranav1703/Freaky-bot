@@ -1,6 +1,7 @@
 import 'dotenv/config'
-import { ExtendedClient } from './types/extendedClient.js';
+// import { ExtendedClient } from './types/extendedClient.js';
 import { 
+	Client,
     Events,
     GatewayIntentBits,
 } from "discord.js";
@@ -12,14 +13,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename); 
 
 
-export const client = new ExtendedClient({
+export const client = new Client({
     intents:[
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildVoiceStates,
     ]
 });
-
 
 
 //set commands
