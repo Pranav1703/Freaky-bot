@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { 
+    ChatInputCommandInteraction, 
+    SlashCommandBuilder,
+    EmbedBuilder 
+} from "discord.js";
 
 const statusString = (wsPing: number,commandPing: number): string=> {
     return `
@@ -66,9 +70,17 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 fetchReply: true
                 
             })
+
+            const pingEmbed = new EmbedBuilder()
+                                    .setTitle("Pong!")
+                                    .setDescription(statusString(interaction.client.ws.ping,(resp.createdTimestamp - interaction.createdTimestamp)))
+                                    .setTimestamp();
+
             interaction.editReply({
-                content: statusString(interaction.client.ws.ping,(resp.createdTimestamp - interaction.createdTimestamp))
+                content: "",
+                embeds:[pingEmbed]
             })
+            
             break;
     }
 }
