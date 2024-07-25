@@ -1,6 +1,4 @@
 // import { Client, ClientOptions, Collection } from 'discord.js';
-// import { Command } from './command.js';
-
 // export class ExtendedClient extends Client {
     
 //     commands: Collection<string, Command>;
@@ -11,9 +9,10 @@
 //     }
 // }
 
+import { Command } from './command.js';
 import { Collection } from "discord.js";
 declare module "discord.js" {
     export interface Client{
-        commands: Collection<string,any>
+        commands: Collection<string,Command>
     }
 }

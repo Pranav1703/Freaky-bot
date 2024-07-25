@@ -2,6 +2,7 @@ import 'dotenv/config'
 // import { ExtendedClient } from './types/extendedClient.js';
 import { 
 	Client,
+    Collection,
     Events,
     GatewayIntentBits,
 } from "discord.js";
@@ -22,6 +23,7 @@ export const client = new Client({
     ]
 });
 
+client.commands = new Collection();
 
 //set commands
 (async () => {
