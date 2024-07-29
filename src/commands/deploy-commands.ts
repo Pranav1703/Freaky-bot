@@ -10,7 +10,8 @@ const token = getEnvVar("DISCORD_TOKEN")
 const clientId = getEnvVar("CLIENT_ID")
 const guildId = getEnvVar("GUILD_ID")
 
-const commands = []
+const commands:Array<any> = []
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const commandFolders = fs

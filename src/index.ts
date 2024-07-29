@@ -1,14 +1,13 @@
 import 'dotenv/config'
-// import { ExtendedClient } from './types/extendedClient.js';
 import { 
 	Client,
     Collection,
-    Events,
     GatewayIntentBits,
 } from "discord.js";
 import fs from 'fs';
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
+import { Player } from 'discord-player';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
@@ -24,6 +23,9 @@ export const client = new Client({
 });
 
 client.commands = new Collection();
+const player = new Player(client);
+
+await player.extractors.loadDefault();
 
 //set commands
 (async () => {
@@ -55,31 +57,6 @@ client.commands = new Collection();
 		}
 	}	
 })();
-
-
-// client.on(Events.InteractionCreate, async (interaction) => {
-    
-//     if(!interaction.isCommand()){return}
-//     const command = client.commands.get(interaction.commandName)
-
-// 	if (!command) {
-// 		console.error(`No command matching ${interaction.commandName} was found.`);
-// 		return
-// 	}
-
-// 	try {
-// 		await command.execute(interaction);
-// 	} catch (error) {
-// 		console.error(error);
-// 		if (interaction.replied || interaction.deferred) {
-// 			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-// 		} else {
-// 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-// 		}
-// 	}
-
-// });
-
 
 
 const token = process.env.DISCORD_TOKEN;

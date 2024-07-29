@@ -8,9 +8,11 @@
 //         this.commands = new Collection();
 //     }
 // }
+// 
 
+import { Collection } from 'discord.js';
 import { Command } from './command.js';
-import { Collection } from "discord.js";
+
 declare module "discord.js" {
     export interface Client{
         commands: Collection<string,Command>
