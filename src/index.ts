@@ -26,7 +26,6 @@ client.commands = new Collection();
 const player = new Player(client);
 
 await player.extractors.loadDefault();
-
 //set commands
 (async () => {
 	const commandFolders = fs.readdirSync(__dirname+"/commands").filter((folder)=>fs.lstatSync(`${__dirname}/commands/${folder}`).isDirectory());

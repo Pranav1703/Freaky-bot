@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { channel } from "diagnostics_channel";
+import { useMainPlayer } from "discord-player";
+import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder } from "discord.js";
+
+
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -11,3 +15,12 @@ export const data = new SlashCommandBuilder()
 
                             
 
+export async function execute(interaction:ChatInputCommandInteraction){
+    const player = useMainPlayer();
+    const member = interaction.member as GuildMember
+    const channel = member.voice.channel
+    console.log(channel)
+    
+    if(!channel) return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+    interaction.reply("command called.")
+}
