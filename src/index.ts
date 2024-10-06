@@ -8,6 +8,7 @@ import fs from 'fs';
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
 import { Player } from 'discord-player';
+import {YoutubeiExtractor} from 'discord-player-youtubei'
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
@@ -26,6 +27,11 @@ client.commands = new Collection();
 const player = new Player(client);
 
 await player.extractors.loadDefault();
+player.extractors.unregister('YouTubeExtractor');
+
+await player.extractors.register(YoutubeiExtractor,undefined);
+
+
 //set commands
 (async () => {
 	const commandFolders = fs.readdirSync(__dirname+"/commands").filter((folder)=>fs.lstatSync(`${__dirname}/commands/${folder}`).isDirectory());

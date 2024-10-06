@@ -19,8 +19,10 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const player = useMainPlayer();
     const member = interaction.member as GuildMember
     const channel = member.voice.channel
-    console.log(channel)
     
-    if(!channel) return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
-    interaction.reply("command called.")
+    const url = interaction.options.getString("url");
+    console.log(url)
+
+    //if(!channel) return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+    interaction.reply(`command called. url passed :${url}`)
 }
