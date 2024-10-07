@@ -1,4 +1,3 @@
-import { channel } from "diagnostics_channel";
 import { useMainPlayer } from "discord-player";
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 
@@ -8,8 +7,8 @@ export const data = new SlashCommandBuilder()
                         .setName("play")
                         .setDescription("plays the song")
                         .addStringOption(option=>
-                            option.setName("url")
-                            .setDescription("url of the song")
+                            option.setName("query")
+                            .setDescription("url or name of the song")
                             .setRequired(true)
                             );
 
@@ -20,19 +19,22 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const member = interaction.member as GuildMember
     const channel = member.voice.channel as VoiceBasedChannel
     
-    const url = interaction.options.getString("url") as string;
-    console.log(url)
+    const query = interaction.options.getString("query") as string;
 
-    if(!channel) return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+    if(!channel){
+        return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+    }
 
     try {
-        const { track } = await player.play(channel,url,{
+        const { track } = await player.play(channel,query,{
             nodeOptions:{
-                metadata: interaction
+                metadata: interaction.channel
             }
         })
-        interaction.reply(`url passed :${url}\n.**${track.title}** enqueued!`)
+        interaction.reply(`**${track.title}** enqueued!`)
     } catch (error) {
-        interaction.followUp(`Something went wrong: ${error}`);
+        interaction.reply(`Something went wrong: ${error}`);
+        console.log("something went wrong: ",error)
     }
+    
 }
