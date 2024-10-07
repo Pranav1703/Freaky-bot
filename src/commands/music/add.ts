@@ -17,17 +17,23 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     const query = interaction.options.getString("query") as string;
     
-
+    console.log("queue :",queue)
     const guildNode = usePlayer(interaction.guild?.id as string);
     console.log("guild NODE ",guildNode)
 
-
+    
     const track = await player.search(query);
-    console.log(track.tracks[0])
+    // console.log(track.tracks[0])
     queue?.addTrack(track.tracks[0])
 
     console.log("queue size: ",queue?.getSize())
     await interaction.reply(`track data: ${track}`)
+    
+    setTimeout(() => {
+        guildNode?.stop()
+    }, 4000);
+
+    
 }
 
                             
