@@ -5,7 +5,7 @@ import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBas
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
-                        .setDescription("plays the song")
+                        .setDescription("Plays the song by searching the track using query.")
                         .addStringOption(option=>
                             option.setName("query")
                             .setDescription("url or name of the song")
