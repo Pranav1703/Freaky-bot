@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import { useMainPlayer, usePlayer, useQueue } from "discord-player";
 
 export const data = new SlashCommandBuilder()
@@ -14,26 +14,40 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     const player = useMainPlayer();
     const queue = useQueue(interaction.guild?.id as string);
-    console.log("queue :",queue)
+
+    const member = interaction.member as GuildMember
+    const channel = member.voice.channel as VoiceBasedChannel
 
     const query = interaction.options.getString("query") as string;
     
-
-    const guildNode = usePlayer(interaction.guild?.id as string);
+    const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
     console.log("guild NODE ",guildNode)
 
     try {
         const track = await player.search(query);
 
             // console.log(track.tracks[0])
-        queue?.insertTrack(track.tracks[0])  // test this
+        // queue?.insertTrack(track.tracks[0])  // test this
         
+        if(guildNode === null){
+            try {
+                const {track} = await player.play(channel,query,{
+                    nodeOptions:{
+                        metadata: interaction.channel
+                    }
+                })
+                interaction.reply(`Playing **${track.title}**.`)
+            } catch (error) {
+                
+            }
+        }
+
         guildNode?.insert(track.tracks[0]) // test this
         
         console.log(track.tracks[0].duration)
         
-        console.log("queue size: ",queue?.getSize())
-        await interaction.reply(`track data: ${track}`)
+        console.log("queue size: ",guildNode?.queue.getSize())  //guildNode.queue = queue ??
+        await interaction.reply(`${track.tracks[0].title} added to the queue!`)
         
         // setTimeout(() => {
         //     guildNode?.stop()
