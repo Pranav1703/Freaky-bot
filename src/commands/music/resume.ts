@@ -1,3 +1,4 @@
+import { useTimeline } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -6,7 +7,10 @@ export const data = new SlashCommandBuilder()
 
 
 export async function execute(interaction:ChatInputCommandInteraction) {
+    const { resume } = useTimeline(interaction.guildId as string)!
 
+    resume();
+    
 }
 
 
