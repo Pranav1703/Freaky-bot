@@ -13,7 +13,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction:ChatInputCommandInteraction){
     
     const player = useMainPlayer();
-    const queue = useQueue(interaction.guild?.id as string);
+    // const queue = useQueue(interaction.guild?.id as string);
 
     const member = interaction.member as GuildMember
     const channel = member.voice.channel as VoiceBasedChannel
@@ -21,7 +21,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const query = interaction.options.getString("query") as string;
     
     const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
-    console.log("\nguild NODE ",guildNode)
+    console.log("\nqueue:  ",guildNode?.queue.tracks.toString())
 
     try {
         
@@ -32,28 +32,23 @@ export async function execute(interaction:ChatInputCommandInteraction){
                         metadata: interaction.channel
                     }
                 })
-                await interaction.reply(`**${track.title}** added to queue.`)
-                await interaction.followUp(`Playing **${track.title}**.`)
+                await interaction.reply(`Playing **${track.title}**.`)
                 
             } catch (error) {
                 console.log("error while playing: ",error)
             }
-            return
+            return;
+            
         }else{
             const track = await player.search(query);
 
             // console.log(track.tracks[0])
             // queue?.insertTrack(track.tracks[0])  // test this
-            guildNode?.insert(track.tracks[0]) // test this
-            
-            console.log(track.tracks[0].duration)
+            //guildNode?.insert(track.tracks[0]) // test this
+            guildNode.queue.addTrack(track.tracks[0])
             
             console.log("queue size: ",guildNode?.queue.getSize())  //guildNode.queue = queue ??
             await interaction.reply(`${track.tracks[0].title} added to the queue!`)
-            
-            // setTimeout(() => {
-            //     guildNode?.stop()
-            // }, 4000);
     
         }
 

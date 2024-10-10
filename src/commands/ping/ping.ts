@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import { 
     ChatInputCommandInteraction, 
     SlashCommandBuilder,
@@ -43,7 +44,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
         case "immortal_lord_":
             interaction.reply({
-                content:"?No more W gaming?"
+                content:"**Jungle DIFF**"
             })
             break;
         
@@ -55,12 +56,12 @@ export async function execute(interaction:ChatInputCommandInteraction){
         
         case "73.53.2532.53.01":
             interaction.reply({
-                content:`Remainder!\nu need to install and finish elden ring dlc.`
+                content:`.`
             })
             break;
         case "rahult":
             interaction.reply({
-                content:"total living creatures in your basement: 429"
+                content:`total living creatures in your basement: ${randomInt(100,1000)}`
             })
             break;
 

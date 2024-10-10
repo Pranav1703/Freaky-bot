@@ -1,4 +1,4 @@
-import { useTimeline } from "discord-player";
+import { usePlayer, useTimeline } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -7,10 +7,15 @@ export const data = new SlashCommandBuilder()
 
 
 export async function execute(interaction:ChatInputCommandInteraction) {
-    const { resume } = useTimeline(interaction.guildId as string)!
+    const { resume,timestamp } = useTimeline(interaction.guildId as string)!
 
+    const guildNode = usePlayer(interaction.guild?.id as string)
+    if(guildNode===null){
+        await interaction.reply("Player is idle.")
+        return
+    }
     resume();
-    
+    await interaction.reply(`Player resumed at ${timestamp.current.label}`)
 }
 
 

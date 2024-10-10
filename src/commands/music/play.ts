@@ -31,9 +31,9 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 metadata: interaction.channel
             }
         })
-        interaction.reply(`**${track.title}** enqueued!`)
+        await interaction.reply(`**${track.title}** enqueued!`)
     } catch (error) {
-        interaction.reply(`Something went wrong: ${error}`);
+        await interaction.reply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)
     }
     
