@@ -22,36 +22,44 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     // const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
 
+    await interaction.deferReply()
+
     try {
         
         if(!queue?.isPlaying()){
-            try {
-                const {track} = await player.play(channel,query,{
-                    nodeOptions:{
-                        metadata: interaction.channel,
-                        leaveOnStop:true,
-                        leaveOnEmpty:true,
-                        bufferingTimeout: 15000
-                    }
-                })
-                await interaction.reply(`Playing **${track.title}**.`)
-                
-            } catch (error) {
-                console.log("search failed: ",error)
+            const result = await player.search(query)
+            const { track } = await player.play(channel,result,{
+                nodeOptions:{
+                    leaveOnStop:true,
+                    leaveOnEmpty:true,
+                    metadata: interaction.channel,
+                    bufferingTimeout: 15000
+                }
+            })
+
+            if(result.hasPlaylist()){
+                await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
+                return;
             }
-            return;
-            
+            await interaction.editReply(`**${track.title}** enqueued!`)
+  
         }else{
             try {
-                const track = await player.search(query);
-
+                const result = await player.search(query);
+                
                 // console.log(track.tracks[0])
                 // queue?.insertTrack(track.tracks[0])  // test this
                 //guildNode?.insert(track.tracks[0]) // test this
-                queue.addTrack(track.tracks[0])
+                if(result.hasPlaylist()){
+                    queue.addTrack(result.playlist!)
+                    await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
+                }else{
+                    queue.addTrack(result.tracks[0])
                 
+                    await interaction.editReply(`${result.tracks[0].title} added to the queue!`)
+                }
                 console.log("queue size: ",queue.getSize())  //guildNode.queue = queue ??
-                await interaction.reply(`${track.tracks[0].title} added to the queue!`)
+
             } catch (error) {
                 console.log("Error while adding track to queue: ",error)
             }

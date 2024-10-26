@@ -32,28 +32,40 @@ export async function execute(interaction:ChatInputCommandInteraction){
     await interaction.deferReply()
     try {
         if(queue?.isPlaying()){
-            const track = await player.search(query);
-    
-            queue.addTrack(track.tracks[0])
+            const result = await player.search(query);
             
-            console.log("queue size: ",queue.getSize())  
-            await interaction.editReply(`${track.tracks[0].title} added to the queue!`)
+            if(result.hasPlaylist()){
+                queue.addTrack(result.playlist!)
+                await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
+            }else{
+                queue.addTrack(result.tracks[0])
             
+                await interaction.editReply(`${result.tracks[0].title} added to the queue!`)
+            }
+
+            console.log("queue size: ",queue.getSize()) 
+
         }else{
-            const { track } = await player.play(channel,query,{
+            const result = await player.search(query)
+            const { track } = await player.play(channel,result,{
                 nodeOptions:{
                     leaveOnStop:true,
                     leaveOnEmpty:true,
                     metadata: interaction.channel,
-                    bufferingTimeout: 15000
+                    bufferingTimeout: 15000,
                 }
             })
-            await interaction.editReply(`**${track.title}** enqueued!`)
+
+            console.log("result:",result.toJSON())
+            if(result.hasPlaylist()){
+                await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
+            }else{
+                await interaction.editReply(`**${track.title}** enqueued!`)
+            }
         }
     } catch (error) {
         await interaction.editReply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)
     }
-   console.log("player node playing? :",queue?.isPlaying())
     
 }

@@ -24,7 +24,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         return
     }
 
-    queue.node.setVolume(volume); 
+    queue.node.setVolume(Number(volume)); 
 
     await interaction.reply(`Volume set to ${volume}%`)
 }
