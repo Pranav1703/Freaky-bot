@@ -13,18 +13,18 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction:ChatInputCommandInteraction){
     
     const player = useMainPlayer();
-    // const queue = useQueue(interaction.guild?.id as string);
+    const queue = useQueue(interaction.guild?.id as string);
 
     const member = interaction.member as GuildMember
     const channel = member.voice.channel as VoiceBasedChannel
 
     const query = interaction.options.getString("query") as string;
     
-    const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
+    // const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
 
     try {
         
-        if(guildNode === null){
+        if(!queue?.isPlaying()){
             try {
                 const {track} = await player.play(channel,query,{
                     nodeOptions:{
@@ -48,18 +48,16 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 // console.log(track.tracks[0])
                 // queue?.insertTrack(track.tracks[0])  // test this
                 //guildNode?.insert(track.tracks[0]) // test this
-                guildNode.queue.addTrack(track.tracks[0])
+                queue.addTrack(track.tracks[0])
                 
-                console.log("queue size: ",guildNode?.queue.getSize())  //guildNode.queue = queue ??
+                console.log("queue size: ",queue.getSize())  //guildNode.queue = queue ??
                 await interaction.reply(`${track.tracks[0].title} added to the queue!`)
             } catch (error) {
                 console.log("Error while adding track to queue: ",error)
             }
-    
         }
 
     } catch (error) {
-
         console.log("error while playing: ",error)
     }
     

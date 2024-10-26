@@ -1,4 +1,4 @@
-import { usePlayer, useTimeline } from "discord-player";
+import { usePlayer, useQueue, useTimeline } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -6,8 +6,8 @@ export const data = new SlashCommandBuilder()
                         .setDescription("Skips the currently playing track.")
 
 export async function execute(interaction:ChatInputCommandInteraction) {
-    const guildNode = usePlayer(interaction.guild?.id as string)
-    if(guildNode===null){
+    const queue = useQueue(interaction.guild?.id as string)
+    if(queue===null){
         await interaction.reply("Player is idle.")
         return
     }
@@ -15,7 +15,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const { track } = useTimeline(interaction.guildId as string)!
 
     await interaction.reply(`Skipping **${track?.title}**.`) 
-    guildNode.skip()
+    queue.node.skip()
 
     
 }

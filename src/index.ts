@@ -70,12 +70,12 @@ player.on('debug', async (message) => {
     console.log(`\x1b[1m General player debug event: \x1b[0m${message}`);
 });
 
-// player.events.on('debug', async (queue, message) => {
-//     // Emitted when the player queue sends debug info
-//     // Useful for seeing what state the current queue is at
-//     console.log(`\x1b[1m Player state change debug event: \x1b[0m ${message}.`);
+player.events.on('debug', async (queue, message) => {
+    // Emitted when the player queue sends debug info
+    // Useful for seeing what state the current queue is at
+    console.log(`\x1b[1m Player state change debug event: \x1b[0m ${message}.`);
 	
-// });
+});
 
 player.events.on('error', (queue, error) => {
     // Emitted when the player queue encounters error
@@ -97,3 +97,7 @@ if (!token) {
 
 client.login(token);
 
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    // reconnect or restart the bot here
+});

@@ -1,4 +1,4 @@
-import { usePlayer, useTimeline } from "discord-player";
+import { usePlayer, useQueue } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -15,16 +15,16 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction:ChatInputCommandInteraction) {
 
-    const guildNode = usePlayer(interaction.guild?.id as string);
+    const volume = interaction.options.getNumber("volume") as number;
 
-    if(guildNode===null){
-        await interaction.reply("Player is idel. No track is playing")
+    const queue = useQueue(interaction.guild?.id as string);
+    
+    if(queue===null){
+        await interaction.reply("Player is idle. No track is playing")
         return
     }
 
-    const volume = interaction.options.getNumber("volume") as number;
-    guildNode.setVolume(volume)
-
+    queue.node.setVolume(volume); 
 
     await interaction.reply(`Volume set to ${volume}%`)
 }

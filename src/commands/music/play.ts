@@ -1,4 +1,4 @@
-import { useMainPlayer, usePlayer } from "discord-player";
+import { useMainPlayer, useQueue } from "discord-player";
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 
 
@@ -21,21 +21,22 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     const query = interaction.options.getString("query") as string;
 
-    const guildNode = usePlayer(interaction.guild?.id as string);
+    const queue = useQueue(interaction.guild?.id as string);
 
     if(!channel){
         return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
     }
 
     // console.log("guild node: ",guildNode?.isPlaying())
+    
     await interaction.deferReply()
     try {
-        if(guildNode?.isPlaying()){
+        if(queue?.isPlaying()){
             const track = await player.search(query);
     
-            guildNode.queue.addTrack(track.tracks[0])
+            queue.addTrack(track.tracks[0])
             
-            console.log("queue size: ",guildNode?.queue.getSize())  
+            console.log("queue size: ",queue.getSize())  
             await interaction.editReply(`${track.tracks[0].title} added to the queue!`)
             
         }else{
@@ -53,6 +54,6 @@ export async function execute(interaction:ChatInputCommandInteraction){
         await interaction.editReply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)
     }
-
+   console.log("player node playing? :",queue?.isPlaying())
     
 }
