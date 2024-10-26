@@ -15,7 +15,6 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction:ChatInputCommandInteraction) {
 
-    const { setVolume } = useTimeline(interaction.guildId as string)!
     const guildNode = usePlayer(interaction.guild?.id as string);
 
     if(guildNode===null){
@@ -24,6 +23,8 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     }
 
     const volume = interaction.options.getNumber("volume") as number;
+    guildNode.setVolume(volume)
 
-    setVolume(volume)
+
+    await interaction.reply(`Volume set to ${volume}%`)
 }

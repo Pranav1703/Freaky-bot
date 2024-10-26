@@ -9,6 +9,11 @@ export const data = new SlashCommandBuilder()
                                 .setDescription("value in minutes")
                                 .setRequired(true)
                         )
+                        .addStringOption(option=>
+                            option.setName("message")
+                                .setDescription("message along with timer")
+                                .setRequired(false)
+                        )
 
 export async function execute(interaction:ChatInputCommandInteraction){
     const min = interaction.options.getInteger("val") as number
@@ -19,6 +24,8 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
     const timer = currSec + sec
 
-    interaction.reply(`<t:${timer}:R>`)
+    const msg = interaction.options.getString("message")
+
+    await interaction.reply(`${msg} <t:${timer}:R>`)
 
 }

@@ -1,4 +1,4 @@
-import { useMainPlayer } from "discord-player";
+import { useMainPlayer, usePlayer } from "discord-player";
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 
 
@@ -21,20 +21,38 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     const query = interaction.options.getString("query") as string;
 
+    const guildNode = usePlayer(interaction.guild?.id as string);
+
     if(!channel){
         return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
     }
 
+    // console.log("guild node: ",guildNode?.isPlaying())
+    await interaction.deferReply()
     try {
-        const { track } = await player.play(channel,query,{
-            nodeOptions:{
-                metadata: interaction.channel
-            }
-        })
-        await interaction.reply(`**${track.title}** enqueued!`)
+        if(guildNode?.isPlaying()){
+            const track = await player.search(query);
+    
+            guildNode.queue.addTrack(track.tracks[0])
+            
+            console.log("queue size: ",guildNode?.queue.getSize())  
+            await interaction.editReply(`${track.tracks[0].title} added to the queue!`)
+            
+        }else{
+            const { track } = await player.play(channel,query,{
+                nodeOptions:{
+                    leaveOnStop:true,
+                    leaveOnEmpty:true,
+                    metadata: interaction.channel,
+                    bufferingTimeout: 15000
+                }
+            })
+            await interaction.editReply(`**${track.title}** enqueued!`)
+        }
     } catch (error) {
-        await interaction.reply(`Something went wrong: ${error}`);
+        await interaction.editReply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)
     }
+
     
 }
