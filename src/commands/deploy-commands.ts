@@ -39,6 +39,10 @@ try {
     console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 
+    // rest.delete(Routes.applicationCommand(clientId, '1296046432448548874'))
+	// .then(() => console.log('Successfully deleted application command'))
+	// .catch(console.error);
+
     const data = await rest.put(
         Routes.applicationCommands(clientId),
         { body: commands },

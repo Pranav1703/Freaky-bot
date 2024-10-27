@@ -5,9 +5,14 @@ export const data = new SlashCommandBuilder()
                         .setName("timer")
                         .setDescription("start timer.")
                         .addIntegerOption(option=>
-                            option.setName("val")
-                                .setDescription("value in minutes")
+                            option.setName("min")
+                                .setDescription("minutes")
                                 .setRequired(true)
+                        )
+                        .addIntegerOption(option=>
+                            option.setName("sec")
+                                .setDescription("seconds")
+                                .setRequired(false)
                         )
                         .addStringOption(option=>
                             option.setName("message")
@@ -16,13 +21,16 @@ export const data = new SlashCommandBuilder()
                         )
 
 export async function execute(interaction:ChatInputCommandInteraction){
+    
     const min = interaction.options.getInteger("val") as number
-    const sec = min * 60
+    const sec = interaction.options.getInteger("sec") as number
+
+    const timerToSec = (min *60 ) + sec
     console.log("time in unix timestamp:",Date.now())
 
     const currSec = Math.round(Date.now()/1000)
 
-    const timer = currSec + sec
+    const timer = currSec + timerToSec
 
     const msg = interaction.options.getString("message")
 
