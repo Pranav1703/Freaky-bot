@@ -9,6 +9,7 @@ import { dirname} from 'path';
 import { fileURLToPath } from 'url';
 import { Player } from 'discord-player';
 import {YoutubeiExtractor} from 'discord-player-youtubei'
+import playerEventHandlers  from './utils/playerEvents.js';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
@@ -32,6 +33,7 @@ await player.extractors.loadDefault((ext) => ext !== 'YouTubeExtractor');
 
 await player.extractors.register(YoutubeiExtractor,undefined);
 
+playerEventHandlers(player);
 
 //set commands
 (async () => {
@@ -64,30 +66,6 @@ await player.extractors.register(YoutubeiExtractor,undefined);
 	}	
 })();
 
-// player.on('debug', async (message) => {
-//     // Emitted when the player sends debug info
-//     // Useful for seeing what dependencies, extractors, etc are loaded
-//     console.log(`\x1b[1m General player debug event: \x1b[0m${message}`);
-// });
-
-// player.events.on('debug', async (queue, message) => {
-//     // Emitted when the player queue sends debug info
-//     // Useful for seeing what state the current queue is at
-//     console.log(`\x1b[1m Player state change debug event: \x1b[0m ${message}.`);
-	
-// });
-
-player.events.on('error', (queue, error) => {
-    // Emitted when the player queue encounters error
-    console.log(`\x1b[1m General player error event: \x1b[0m ${error.message}`);
-    console.log(error);
-});
-
-player.events.on('playerError', (queue, error) => {
-    // Emitted when the audio player errors while streaming audio track
-    console.log(`Player error event: ${error.message}`);
-    console.log(error);
-});
 
 const token = process.env.DISCORD_TOKEN;
 
