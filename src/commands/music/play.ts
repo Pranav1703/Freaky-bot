@@ -1,5 +1,5 @@
 import { useMainPlayer, useQueue } from "discord-player";
-import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 
 
 
@@ -22,6 +22,11 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const query = interaction.options.getString("query") as string;
 
     const queue = useQueue(interaction.guild?.id as string);
+
+    // const songEmbed = new EmbedBuilder()
+    //     .setTitle(`Playing **${track.title}**`)
+    //     .setImage(`${track.thumbnail}`)
+    //     .setTimestamp()
 
     if(!channel){
         return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")

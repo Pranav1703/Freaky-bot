@@ -14,6 +14,6 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     }
     
     queue.delete();
-    await interaction.reply("Player stopped.")
+    await interaction.reply("Deleting the queue")
 
 }

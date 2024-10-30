@@ -1,10 +1,32 @@
 import { Player } from 'discord-player';
+import { EmbedBuilder } from 'discord.js';
 
 export default function playerEventHandlers(player:Player):void{
     
-    player.events.on('playerStart', (queue, track) => {
-        // Emitted when the player starts to play a song
-        queue.metadata.send(`Started playing: **${track.title}**`);
+    player.events.on('playerStart', (queue, track) => {        
+        
+        const songEmbed = new EmbedBuilder()
+            .setTitle(`Playing **${track.title}**`)
+            .setDescription(`${track.description}`)
+            .setImage(`${track.thumbnail}`)
+            .addFields(
+                { name: 'Duration', value: `${track.duration}`, inline: true },
+            )
+            .setTimestamp()
+        queue.metadata.send({ embeds: [songEmbed] });
+    });
+
+    player.events.on('emptyQueue', (queue) => {
+        queue.metadata.send('Queue finished!');
+    });
+
+    player.events.on('emptyChannel', (queue) => {
+        queue.metadata.send(`Leaving because no vc activity for the past 5 minutes`);
+    });
+    
+
+    player.events.on('disconnect', (queue) => {
+        queue.metadata.send('Looks like my job here is done, leaving now.');
     });
     
     
