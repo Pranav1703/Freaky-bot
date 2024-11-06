@@ -22,18 +22,33 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction:ChatInputCommandInteraction){
     
-    const min = interaction.options.getInteger("val") as number
-    const sec = interaction.options.getInteger("sec") as number
+    const min = interaction.options.getInteger("min") 
+    const sec = interaction.options.getInteger("sec")
 
-    const timerToSec = (min *60 ) + sec
-    console.log("time in unix timestamp:",Date.now())
+    let timerToSec = 0
+    let timer = 0;
+    if (min && sec){
+        timerToSec = (min *60 ) + sec
+    
+        const currSec = Math.round(Date.now()/1000)
 
-    const currSec = Math.round(Date.now()/1000)
-
-    const timer = currSec + timerToSec
-
+        timer = currSec + timerToSec
+        console.log("min && sec conditon:",timerToSec)
+    }else if (min){
+        timerToSec = min * 60
+        const currSec = Math.round(Date.now()/1000)
+    
+        timer = currSec + timerToSec
+        console.log("min conditon:",timerToSec)
+    }
+    console.log("unix timestamp: ",timer)
     const msg = interaction.options.getString("message")
+    
+    if(msg){
+        await interaction.reply(`${msg} <t:${timer}:R>`)
+    }else{
+        await interaction.reply(`<t:${timer}:R>`)
+    }
 
-    await interaction.reply(`${msg} <t:${timer}:R>`)
 
 }
