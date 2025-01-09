@@ -21,12 +21,12 @@ export default function playerEventHandlers(player:Player):void{
     });
 
     player.events.on('emptyChannel', (queue) => {
-        queue.metadata.send(`Leaving because no vc activity for the past 5 minutes`);
+        queue.metadata.send(`Leaving because no VC activity for the past 5 minutes`);
     });
     
 
     player.events.on('disconnect', (queue) => {
-        queue.metadata.send('Looks like my job here is done, leaving now.');
+        queue.metadata.send('Nothing to play, disconnecting..');
     });
     
     
