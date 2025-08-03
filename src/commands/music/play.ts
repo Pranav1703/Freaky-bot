@@ -15,10 +15,18 @@ export const data = new SlashCommandBuilder()
                             
 
 export async function execute(interaction:ChatInputCommandInteraction){
+
+    if (!interaction.inGuild() || !interaction.guild) {
+        return interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
+    }
+
     const player = useMainPlayer();
     const member = interaction.member as GuildMember
-    const channel = member.voice.channel as VoiceBasedChannel
-    
+    const channel = member.voice.channel 
+
+    if(!channel){
+        return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+    }
     const query = interaction.options.getString("query") as string;
 
     const queue = useQueue(interaction.guild?.id as string);
@@ -28,9 +36,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
     //     .setImage(`${track.thumbnail}`)
     //     .setTimestamp()
 
-    if(!channel){
-        return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
-    }
+
 
     // console.log("guild node: ",guildNode?.isPlaying())
     
@@ -52,7 +58,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
         }else{
             const result = await player.search(query)
-            const { track } = await player.play(channel,result,{
+            const { track } = await player.play(channel,result,{  // automatically selects and plays the first tracks
                 nodeOptions:{
                     leaveOnStop:true,
                     leaveOnEmpty:true,
@@ -61,16 +67,18 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 }
             })
 
-            console.log("result:",result.toJSON())
+            console.log("no of tracks:",result.tracks.length)
+            console.log("first track in search results: ",result.tracks[0].toJSON())
             if(result.hasPlaylist()){
                 await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
+                
             }else{
                 await interaction.editReply(`**${track.title}** enqueued!`)
+                console.log("current track:",track)
             }
         }
     } catch (error) {
         await interaction.editReply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)
-    }
-    
+    }   
 }
