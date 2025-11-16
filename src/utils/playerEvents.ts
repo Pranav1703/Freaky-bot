@@ -26,7 +26,7 @@ export default function playerEventHandlers(player:Player):void{
     
 
     player.events.on('disconnect', (queue) => {
-        queue.metadata.send('Nothing to play, disconnecting..');
+        queue.metadata.send('Nothing to play, disconnecting...');
     });
     
     

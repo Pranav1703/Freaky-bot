@@ -1,4 +1,4 @@
-import { usePlayer as useQueue, useTimeline } from "discord-player";
+import { GuildQueueTimeline, useQueue, useTimeline } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -8,7 +8,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction:ChatInputCommandInteraction) {
 
     // const { timestamp, volume, paused, pause, resume, setVolume, setPosition, track } = useTimeline(interaction.guildId as string);
-    const { paused, pause, timestamp} = useTimeline(interaction.guildId as string)!
+    const queueTimeline = useTimeline() as GuildQueueTimeline
 
     const queue = useQueue(interaction.guild?.id as string)
     if(queue===null){
@@ -16,12 +16,12 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         return
     }
 
-    if(!paused){
-        pause();
+    if(!queueTimeline.paused){
+        queueTimeline.pause();
     }else{
         await interaction.reply("Player is already paused.")
         return
     }
     
-    await interaction.reply(`Player paused at ${timestamp.current.label}.`)
+    await interaction.reply(`Player paused at ${queueTimeline.timestamp.current.label}.`)
 }

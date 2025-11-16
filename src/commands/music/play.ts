@@ -25,20 +25,15 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const channel = member.voice.channel 
 
     if(!channel){
-        return interaction.reply("You are not connected to a voice channel. Connect to a voice channel and try the command agian.")
+        interaction.ephemeral = true
+        return interaction.reply({
+            content:"You are not connected to a voice channel. Connect to a voice channel and try the command agian.",
+        })
+
     }
     const query = interaction.options.getString("query") as string;
 
     const queue = useQueue(interaction.guild?.id as string);
-
-    // const songEmbed = new EmbedBuilder()
-    //     .setTitle(`Playing **${track.title}**`)
-    //     .setImage(`${track.thumbnail}`)
-    //     .setTimestamp()
-
-
-
-    // console.log("guild node: ",guildNode?.isPlaying())
     
     await interaction.deferReply()
     try {

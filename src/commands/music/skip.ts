@@ -1,4 +1,4 @@
-import { usePlayer, useQueue, useTimeline } from "discord-player";
+import { GuildQueueTimeline, usePlayer, useQueue, useTimeline } from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -12,10 +12,9 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         return
     }
     
-    const { track } = useTimeline(interaction.guildId as string)!
+    const queueTimeline = useTimeline() as GuildQueueTimeline
 
-    await interaction.reply(`Skipping **${track?.title}**.`) 
+    await interaction.reply(`Skipping **${queueTimeline.track?.title}**.`) 
     queue.node.skip()
-
     
 }

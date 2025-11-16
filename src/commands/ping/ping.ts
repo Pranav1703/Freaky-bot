@@ -56,7 +56,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         
         case "73.53.2532.53.01":
             interaction.reply({
-                content:`.`
+                content:`stop smoking.`
             })
             break;
         case "rahult":

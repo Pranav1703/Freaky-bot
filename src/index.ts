@@ -8,7 +8,8 @@ import fs from 'fs';
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
 import { Player } from 'discord-player';
-import {YoutubeiExtractor} from 'discord-player-youtubei'
+// import { SpotifyExtractor } from 'discord-player-spotify';
+import { YoutubeiExtractor } from 'discord-player-youtubei';
 import playerEventHandlers  from './utils/playerEvents.js';
 
 const __filename = fileURLToPath(import.meta.url); 
@@ -29,9 +30,13 @@ const player = new Player(client);
 
 // await player.extractors.loadDefault();
 // player.extractors.unregister('YouTubeExtractor');
-await player.extractors.loadDefault((ext) => ext !== 'YouTubeExtractor');
 
-await player.extractors.register(YoutubeiExtractor,undefined);
+// await player.extractors.register(SpotifyExtractor,undefined)
+await player.extractors.register(YoutubeiExtractor, {
+  innertubeConfigRaw: {
+    player_id: '0004de42'
+  }
+});
 
 playerEventHandlers(player);
 

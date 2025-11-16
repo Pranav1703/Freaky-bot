@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import { useMainPlayer, usePlayer, useQueue } from "discord-player";
+import { ChatInputCommandInteraction, GuildMember, PermissionsBitField, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
+import { useMainPlayer, useQueue } from "discord-player";
 
 export const data = new SlashCommandBuilder()
                         .setName("add")
@@ -18,10 +18,44 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const member = interaction.member as GuildMember
     const channel = member.voice.channel as VoiceBasedChannel
 
+    if (!channel) {
+        interaction.ephemeral = true
+        return interaction.reply({
+            content: "You must be in a voice channel to use this command!",
+        });
+    }
+
+    if (
+    interaction.guild!.members.me!.voice.channel &&
+    interaction.guild!.members.me!.voice.channel !== channel
+    ) {
+        return interaction.reply(
+          'I am already playing in a different voice channel!',
+        );
+    }
+
+    // if (
+    // !channel
+    //   .permissionsFor(interaction.guild!.members.me!)
+    //   .has(PermissionsBitField.Flags.Connect)
+    // ) {
+    //   return interaction.reply(
+    //     'I do not have permission to join your voice channel!',
+    //   );
+    // }
+
+    // if (
+    //   !channel
+    //     .permissionsFor(interaction.guild!.members.me!)
+    //     .has(PermissionsBitField.Flags.Speak)
+    // ) {
+    //   return interaction.reply(
+    //     'I do not have permission to speak in your voice channel!',
+    //   );
+    // }
+
     const query = interaction.options.getString("query") as string;
     
-    // const guildNode = usePlayer(interaction.guild?.id as string); //queue.node = guildNode ??
-
     await interaction.deferReply()
 
     try {
@@ -47,9 +81,6 @@ export async function execute(interaction:ChatInputCommandInteraction){
             try {
                 const result = await player.search(query);
                 
-                // console.log(track.tracks[0])
-                // queue?.insertTrack(track.tracks[0])  // test this
-                //guildNode?.insert(track.tracks[0]) // test this
                 if(result.hasPlaylist()){
                     queue.addTrack(result.playlist!)
                     await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
@@ -58,7 +89,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 
                     await interaction.editReply(`${result.tracks[0].title} added to the queue!`)
                 }
-                console.log("queue size: ",queue.getSize())  //guildNode.queue = queue ??
+                console.log("queue size: ",queue.getSize()) 
 
             } catch (error) {
                 console.log("Error while adding track to queue: ",error)
