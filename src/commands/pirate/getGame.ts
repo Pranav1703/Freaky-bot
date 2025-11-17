@@ -4,13 +4,14 @@ import {
     EmbedBuilder,
     AttachmentBuilder
 } from "discord.js";
-import { GetGameFromFg } from "../../pirate/fitgirl";
+
 import { FgRes } from "../../types/types";
 import * as fs from 'fs';
 import * as path from 'path';
+import { GetGameFromFg } from "../../utils/fitgirl.js";
 
 export const data = new SlashCommandBuilder()
-                        .setName("FetchTorrent")
+                        .setName("fetchtorrent")
                         .setDescription("Retrieves Torrent file and Magnet link to download the game.")
                         .addStringOption(option=>
                             option.setName("title")
@@ -20,28 +21,41 @@ export const data = new SlashCommandBuilder()
 
 
 export async function execute(interaction:ChatInputCommandInteraction) {
-    const gameTitle = interaction.options.getString("title") as string
-    const result:FgRes = await GetGameFromFg(gameTitle)
+    await interaction.deferReply()
+    try{
+        const gameTitle = interaction.options.getString("title") as string
+        const result:FgRes = await GetGameFromFg(gameTitle)
 
-    await interaction.reply(`Searching for ${gameTitle} Torrent links...`)
+        const files = fs.readdirSync('./downloads');
+        const magnetFilePath = path.join("./downloads", "magnet.txt");
+        fs.writeFileSync(magnetFilePath, result.MagnetLink);
+        const magnetFileAttachment = new AttachmentBuilder(magnetFilePath);
 
-    const files = fs.readdirSync('./downloads');
-    const torrentFilePath = path.join("./downloads",files[0])
-    const TorrentFile = new AttachmentBuilder(torrentFilePath);
+        const resultEmbed = new EmbedBuilder()
+                .setTitle(`**${result.Title}**`)
+                .setDescription(`Copy the Magnet Link from the attached 'magnet.txt' *or* Download Torrent File attached above`)
+                .setColor("#0083a3")
+                .setTimestamp();
 
-    const resultEmbed = new EmbedBuilder()
-            .setTitle(`**${result.Title}**`)
-            .setDescription(`**Magnet Link** -> [Link](${result.MagnetLink})\n*or*\n**Download Torrent File**`)
-            // .addFields(
-            //   {
-            //     name: "The first inline field.",
-            //     value: "This field is inline.",
-            //     inline: true
-            //   },
-            // )
-            .setColor("#0083a3")
-            .setTimestamp();
-    await interaction.editReply({embeds: [resultEmbed],files: [TorrentFile]})    
-    fs.rmSync(torrentFilePath)
+        if (files.length === 0) {
+            let description = `Copy the Magnet Link`
+            resultEmbed.setDescription(description)
+            await interaction.editReply({embeds: [resultEmbed], files: [magnetFileAttachment]})
+            return
+        }
 
+        const torrentFilePath = path.join("./downloads",files[0])
+        const TorrentFile = new AttachmentBuilder(torrentFilePath);
+        await interaction.editReply({embeds: [resultEmbed],files: [TorrentFile,magnetFileAttachment]}) 
+
+        fs.rmSync(torrentFilePath)
+        fs.rmSync(magnetFilePath);
+    }catch(err){
+        console.error(err);
+        await interaction.editReply({ 
+            content: "An error occurred. The game could not be found or the scraper failed.",
+            embeds: [],
+            files: []
+        });
+    }
 }   
