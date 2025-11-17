@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 import { Player } from 'discord-player';
 // import { SpotifyExtractor } from 'discord-player-spotify';
 import { YoutubeiExtractor } from 'discord-player-youtubei';
-import playerEventHandlers  from './utils/playerEvents.js';
+import playerEventHandlers  from './utils/music/playerEvents.js';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 

@@ -2,3 +2,11 @@ node_modules
 todo.txt
 .env
 /dist
+/downloads
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
