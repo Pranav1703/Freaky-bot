@@ -38,7 +38,7 @@ const rest = new REST().setToken(token);
 try {
     console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-    // rest.delete(Routes.applicationCommand(clientId, 'command-id-here'))
+    // rest.delete(Routes.applicationCommand(clientId, '1440005111685451881'))
 	// .then(() => console.log('Successfully deleted application command'))
 	// .catch(console.error);
 

@@ -1,7 +1,4 @@
-import { useMainPlayer, useQueue } from "discord-player";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-
-
+import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -20,7 +17,6 @@ export async function execute(interaction:ChatInputCommandInteraction){
         return interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
     }
 
-    const player = useMainPlayer();
     const member = interaction.member as GuildMember
     const channel = member.voice.channel 
 
@@ -33,45 +29,10 @@ export async function execute(interaction:ChatInputCommandInteraction){
     }
     const query = interaction.options.getString("query") as string;
 
-    const queue = useQueue(interaction.guild?.id as string);
+
     
-    await interaction.deferReply()
+
     try {
-        if(queue?.isPlaying()){
-            const result = await player.search(query);
-            
-            if(result.hasPlaylist()){
-                queue.addTrack(result.playlist!)
-                await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
-            }else{
-                queue.addTrack(result.tracks[0])
-            
-                await interaction.editReply(`${result.tracks[0].title} added to the queue!`)
-            }
-
-            console.log("queue size: ",queue.getSize()) 
-
-        }else{
-            const result = await player.search(query)
-            const { track } = await player.play(channel,result,{  // automatically selects and plays the first tracks
-                nodeOptions:{
-                    leaveOnStop:true,
-                    leaveOnEmpty:true,
-                    metadata: interaction.channel,
-                    bufferingTimeout: 15000,
-                }
-            })
-
-            console.log("no of tracks:",result.tracks.length)
-            console.log("first track in search results: ",result.tracks[0].toJSON())
-            if(result.hasPlaylist()){
-                await interaction.editReply(`**${result.playlist?.title}** playlist enqueued!`)
-                
-            }else{
-                await interaction.editReply(`**${track.title}** enqueued!`)
-                console.log("current track:",track)
-            }
-        }
     } catch (error) {
         await interaction.editReply(`Something went wrong: ${error}`);
         console.log("something went wrong: ",error)

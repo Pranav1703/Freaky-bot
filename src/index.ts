@@ -1,16 +1,13 @@
-import 'dotenv/config'
 import { 
 	Client,
     Collection,
     GatewayIntentBits,
 } from "discord.js";
+import getEnvVar from "./utils/env.js";
 import fs from 'fs';
 import { dirname} from 'path';
 import { fileURLToPath } from 'url';
-import { Player } from 'discord-player';
-// import { SpotifyExtractor } from 'discord-player-spotify';
-import { YoutubeiExtractor } from 'discord-player-youtubei';
-import playerEventHandlers  from './utils/playerEvents.js';
+import { initInnerTube } from './services/yt.js';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = dirname(__filename); 
@@ -25,20 +22,9 @@ export const client = new Client({
     ]
 });
 
+await initInnerTube();
+
 client.commands = new Collection();
-const player = new Player(client);
-
-// await player.extractors.loadDefault();
-// player.extractors.unregister('YouTubeExtractor');
-
-// await player.extractors.register(SpotifyExtractor,undefined)
-await player.extractors.register(YoutubeiExtractor, {
-  innertubeConfigRaw: {
-    player_id: '0004de42'
-  }
-});
-
-playerEventHandlers(player);
 
 //set commands
 (async () => {
@@ -71,7 +57,7 @@ playerEventHandlers(player);
 	}	
 })();
 
-const token = process.env.DISCORD_TOKEN;
+const token = getEnvVar("DISCORD_TOKEN");
 
 if (!token) {
     throw new Error("Token not found. Check .env file");

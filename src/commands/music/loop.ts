@@ -1,4 +1,3 @@
-import { useQueue} from "discord-player";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export const data = new SlashCommandBuilder()
@@ -17,25 +16,6 @@ export const data = new SlashCommandBuilder()
                         ))
 
 export async function execute(interaction:ChatInputCommandInteraction) {
-    const queue = useQueue(interaction.guild?.id as string)
-    if(queue===null){
-        await interaction.reply("Player is idle.")
-        return
-    }
-    
-    // queue.setRepeatMode(queue.repeatMode)
 
-    const loopTrack = interaction.options.getBoolean("track")
-    const loopQueue = interaction.options.getBoolean("queue")
     
-    if(loopTrack){
-        queue.setRepeatMode(1)
-        await interaction.reply(`Current Track is in loop.`) 
-    }else if(loopQueue){
-        queue.setRepeatMode(2)
-        await interaction.reply(`Current Queue is in loop.`) 
-    }else{
-        await interaction.reply("Track or queue option was not previded")
-    }
-    return
 }

@@ -8,7 +8,7 @@ import {
 import { FgRes } from "../../types/types";
 import * as fs from 'fs';
 import * as path from 'path';
-import { GetGameFromFg } from "../../utils/fitgirl.js";
+import { GetGameFromFg } from "../../services/fitgirl.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("fetchtorrent")
