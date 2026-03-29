@@ -34,26 +34,6 @@ export async function execute(interaction:ChatInputCommandInteraction){
         );
     }
 
-    // if (
-    // !channel
-    //   .permissionsFor(interaction.guild!.members.me!)
-    //   .has(PermissionsBitField.Flags.Connect)
-    // ) {
-    //   return interaction.reply(
-    //     'I do not have permission to join your voice channel!',
-    //   );
-    // }
-
-    // if (
-    //   !channel
-    //     .permissionsFor(interaction.guild!.members.me!)
-    //     .has(PermissionsBitField.Flags.Speak)
-    // ) {
-    //   return interaction.reply(
-    //     'I do not have permission to speak in your voice channel!',
-    //   );
-    // }
-
     const query = interaction.options.getString("query") as string;
     
     await interaction.deferReply()
