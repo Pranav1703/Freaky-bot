@@ -1,5 +1,8 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import {yt} from "../../services/yt.js"
+import {yt} from "../../services/yt/yt.js"
+import { verify } from "crypto";
+import { Video } from "youtubei.js/dist/src/parser/nodes.js";
+import { AudioResource } from "@discordjs/voice";
 
 
 export const data = new SlashCommandBuilder()
@@ -28,12 +31,9 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     try {
         interaction.reply("testing command called. query: " + query)
-        const resp = await yt.search(query)
-        const res = resp.results
-        console.log("--- logs --- \n")
-        console.log("playlists:" ,resp.playlists[0])
-        // console.log("videos: ", resp.videos)
-        // console.log("results: ",res)
+
+
+
     } catch (error) {
         console.log("error while playing: ",error)
     }
