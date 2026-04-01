@@ -12,12 +12,9 @@ export async function searchAndGetAudioResource(query: string): Promise<AudioRes
             '-o', '-',               // Output to stdout (dash)
             // '--quiet',               // Don't clutter logs
             '--no-playlist',         // Only first result
-            // YouTube sometimes throttles; these help:
-            '--limit-rate', '100K',   
-            '--no-warnings'
         ]);
-        process.stderr.on('data', (data) => {
-            console.error(`[yt-dlp] stderr: ${data.toString()}`);
+        process.stderr.on('data', (data) => {  // using stderr for status updates, and warnings, not just fatal errors.
+            console.error(`[yt-dlp] data event: ${data.toString()}`);
         });
 
         process.on('error', (err) => {
@@ -31,9 +28,9 @@ export async function searchAndGetAudioResource(query: string): Promise<AudioRes
             inputType: StreamType.Arbitrary,
             inlineVolume: true 
         });
-
-        resource.playStream.on('error', () => process.kill());
-        resource.playStream.on('end', () => process.kill());
+        
+        resource.playStream.on('error', (err) => { console.log("Killing process due to ERROR:",err); process.kill() });
+        resource.playStream.on('end', () => { console.log("Killing process. Playing ended."); process.kill() });
 
         return resource
 
