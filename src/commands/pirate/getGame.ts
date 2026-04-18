@@ -5,10 +5,10 @@ import {
     AttachmentBuilder
 } from "discord.js";
 
-import { FgRes } from "../../types/types";
+import { FgRes } from "../../types/types.js";
 import * as fs from 'fs';
 import * as path from 'path';
-import { GetGameFromFg } from "../../services/fitgirl.js";
+import { GetGameFromFg } from "../../services/pirate/fitgirl.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("fetchtorrent")

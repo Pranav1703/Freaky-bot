@@ -34,7 +34,7 @@ export async function searchAndGetAudioResource(query: string): Promise<AudioRes
         return resource
 
     } catch (error) {
-        console.log(error)
+        console.log("cant create audio resource: ",error)
         return
     }
 }

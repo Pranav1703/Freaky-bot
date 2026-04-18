@@ -1,6 +1,7 @@
 import { createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior } from "@discordjs/voice";
 import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import { searchAndGetAudioResource } from "../../services/yt/search.js";
+import queueManager from "../../services/queue/queueManager.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -37,13 +38,15 @@ export async function execute(interaction:ChatInputCommandInteraction){
     const query = interaction.options.getString("query") as string;
     
     try {
-        interaction.editReply("testing command called. query: " + query)
+        const queue = queueManager.addOrGetQueue(interaction.guildId!)
 
-        const resource = await searchAndGetAudioResource(query)
-        if(!resource){
+        const queryResource = await searchAndGetAudioResource(query)
+        if(!queryResource){
             interaction.editReply("server error. Cant search or create audio resource for player.")
             return
         }
+        queue.push(queryResource)
+        
         const connection = joinVoiceChannel({
             channelId: channel.id,
             guildId: interaction.guildId!,
@@ -54,9 +57,13 @@ export async function execute(interaction:ChatInputCommandInteraction){
                 noSubscriber: NoSubscriberBehavior.Stop
             }
         })
-
+        
+        const resource = queue.shift()
+        console.log("resource info:",resource.metadata)
         connection.subscribe(player)
         player.play(resource)
+        interaction.editReply(`playing from queue(length: ${queue.length})`)
+
     } catch (error) {
         console.log("error while playing: ",error)
     } 

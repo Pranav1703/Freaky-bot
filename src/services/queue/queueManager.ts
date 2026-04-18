@@ -1,15 +1,17 @@
 class QueueManager {
-    queueMap: Map<String, Array<any>>;
-    constructor(){
+
+    private queueMap: Map<String, Array<any>>;
+
+    constructor() {
         this.queueMap = new Map()
     }
 
-    addOrGetQueue(guildId: String){
+    addOrGetQueue(guildId: String) {
         if(!this.queueMap.has(guildId)){
             this.queueMap.set(guildId,[])
         }
 
-        return this.queueMap.get(guildId)
+        return this.queueMap.get(guildId) as any[]
     }
 }
 
