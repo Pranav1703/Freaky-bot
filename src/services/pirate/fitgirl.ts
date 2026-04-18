@@ -1,6 +1,5 @@
-
 import { chromium} from 'playwright';
-import {FgRes} from "../types/types"
+import {FgRes} from "../types/types.js"
 
 export async function GetGameFromFg(name:string):Promise<FgRes>{
     const browser = await chromium.launch({

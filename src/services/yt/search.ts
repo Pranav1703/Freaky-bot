@@ -1,4 +1,3 @@
-
 import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import { spawn } from "child_process";
 

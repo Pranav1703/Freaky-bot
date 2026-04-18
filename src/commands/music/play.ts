@@ -1,4 +1,6 @@
-import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder } from "discord.js";
+import { createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior } from "@discordjs/voice";
+import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
+import { searchAndGetAudioResource } from "../../services/yt/search.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -13,28 +15,49 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction:ChatInputCommandInteraction){
 
-    if (!interaction.inGuild() || !interaction.guild) {
-        return interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
-    }
-
     const member = interaction.member as GuildMember
-    const channel = member.voice.channel 
+    const channel = member.voice.channel as VoiceBasedChannel
 
-    if(!channel){
+    if (!channel) {
         interaction.ephemeral = true
         return interaction.reply({
-            content:"You are not connected to a voice channel. Connect to a voice channel and try the command agian.",
+            content: "You must be in a voice channel to use this command!",
+        });
+    }
+    await interaction.deferReply();
+    if (
+    interaction.guild!.members.me!.voice.channel &&
+    interaction.guild!.members.me!.voice.channel !== channel
+    ) {
+        return interaction.editReply(
+          'I am already playing in a different voice channel!',
+        );
+    }
+    
+    const query = interaction.options.getString("query") as string;
+    
+    try {
+        interaction.editReply("testing command called. query: " + query)
+
+        const resource = await searchAndGetAudioResource(query)
+        if(!resource){
+            interaction.editReply("server error. Cant search or create audio resource for player.")
+            return
+        }
+        const connection = joinVoiceChannel({
+            channelId: channel.id,
+            guildId: interaction.guildId!,
+            adapterCreator: channel.guild.voiceAdapterCreator!
+        })
+        const player = createAudioPlayer({
+            behaviors: {
+                noSubscriber: NoSubscriberBehavior.Stop
+            }
         })
 
-    }
-    const query = interaction.options.getString("query") as string;
-
-
-    
-
-    try {
+        connection.subscribe(player)
+        player.play(resource)
     } catch (error) {
-        await interaction.editReply(`Something went wrong: ${error}`);
-        console.log("something went wrong: ",error)
-    }   
+        console.log("error while playing: ",error)
+    } 
 }
