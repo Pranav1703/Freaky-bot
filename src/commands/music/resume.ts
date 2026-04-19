@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import queueManager from "../../services/queue/queueManager.js";
+import { AudioPlayerStatus } from "@discordjs/voice";
 
 export const data = new SlashCommandBuilder()
                         .setName("resume")
@@ -33,7 +34,11 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     if(guildPlayer.queue.length===0){
         return interaction.reply("queue is empty. No audio resource to resume playing.")
     }
+    if(guildPlayer.player.state.status === AudioPlayerStatus.Playing){
+        return interaction.reply("played is already in 'playing' state.")
+    }
     guildPlayer.player.unpause()
+    interaction.reply("Resumed Playing")
 }
 
 
