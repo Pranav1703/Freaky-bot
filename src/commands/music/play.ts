@@ -1,7 +1,8 @@
-import { createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior } from "@discordjs/voice";
+import { AudioPlayerStatus, joinVoiceChannel } from "@discordjs/voice";
 import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import { searchAndGetAudioResource } from "../../services/yt/search.js";
 import queueManager from "../../services/queue/queueManager.js";
+import { addAudioPlayerListeners } from "../../listeners/player.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -34,36 +35,39 @@ export async function execute(interaction:ChatInputCommandInteraction){
           'I am already playing in a different voice channel!',
         );
     }
-    
+
+
     const query = interaction.options.getString("query") as string;
     
     try {
-        const queue = queueManager.addOrGetQueue(interaction.guildId!)
+        const playerHandler = queueManager.GetOrAddPlayerHandler(interaction.guildId!)
 
         const queryResource = await searchAndGetAudioResource(query)
         if(!queryResource){
             interaction.editReply("server error. Cant search or create audio resource for player.")
             return
         }
-        queue.push(queryResource)
-        
+        playerHandler.queue.push(queryResource)
+
+        if(playerHandler.player.state.status  === AudioPlayerStatus.Playing){
+            interaction.editReply(`Song added to queue. Queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
+
+        }
+
         const connection = joinVoiceChannel({
             channelId: channel.id,
             guildId: interaction.guildId!,
             adapterCreator: channel.guild.voiceAdapterCreator!
         })
-        const player = createAudioPlayer({
-            behaviors: {
-                noSubscriber: NoSubscriberBehavior.Stop
-            }
-        })
-        
-        const resource = queue.shift()
-        console.log("resource info:",resource.metadata)
-        connection.subscribe(player)
-        player.play(resource)
-        interaction.editReply(`playing from queue(length: ${queue.length})`)
 
+        const resource = playerHandler.queue.shift()
+        if(!resource) return interaction.editReply("queue emtpy.")
+
+        connection.subscribe(playerHandler.player)
+        playerHandler.player.play(resource)
+
+        addAudioPlayerListeners(playerHandler.player,connection)
+        interaction.editReply(`playing from queue(length: ${playerHandler.queue.length})`)
     } catch (error) {
         console.log("error while playing: ",error)
     } 

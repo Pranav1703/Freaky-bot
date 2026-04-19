@@ -1,20 +1,36 @@
-class QueueManager {
+import { AudioPlayer, AudioResource, createAudioPlayer, NoSubscriberBehavior } from "@discordjs/voice";
 
-    private queueMap: Map<String, Array<any>>;
+type PlayerHandler = {
+    player: AudioPlayer;
+    queue: AudioResource[]
+}
+
+class GuildQueueManager {
+
+    private guildMap: Map<string, PlayerHandler>;
 
     constructor() {
-        this.queueMap = new Map()
+        this.guildMap = new Map()
     }
 
-    addOrGetQueue(guildId: String) {
-        if(!this.queueMap.has(guildId)){
-            this.queueMap.set(guildId,[])
+    GetOrAddPlayerHandler(guildId: string) {
+        let gq = this.guildMap.get(guildId)
+        if(!gq){
+            const newPlayer = createAudioPlayer({
+                behaviors: {
+                    noSubscriber: NoSubscriberBehavior.Stop,
+                },
+            });
+            gq = {
+                player: newPlayer,
+                queue: []
+            }
+            this.guildMap.set(guildId,gq)
         }
-
-        return this.queueMap.get(guildId) as any[]
+        return gq
     }
 }
 
-const queueManager = new QueueManager()
+const queueManager = new GuildQueueManager()
 
 export default queueManager
