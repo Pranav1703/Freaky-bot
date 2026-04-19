@@ -36,11 +36,11 @@ export async function execute(interaction:ChatInputCommandInteraction){
         );
     }
 
-
+    const guildId = interaction.guildId!
     const query = interaction.options.getString("query") as string;
     
     try {
-        const playerHandler = queueManager.GetOrAddPlayerHandler(interaction.guildId!)
+        const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
 
         const queryResource = await searchAndGetAudioResource(query)
         if(!queryResource){
@@ -66,7 +66,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         connection.subscribe(playerHandler.player)
         playerHandler.player.play(resource)
 
-        addAudioPlayerListeners(playerHandler.player,connection)
+        addAudioPlayerListeners(playerHandler.player, connection, guildId)
         interaction.editReply(`playing from queue(length: ${playerHandler.queue.length})`)
     } catch (error) {
         console.log("error while playing: ",error)
