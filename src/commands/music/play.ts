@@ -50,8 +50,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         playerHandler.queue.push(queryResource)
 
         if(playerHandler.player.state.status  === AudioPlayerStatus.Playing){
-            interaction.editReply(`Song added to queue. Queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
-
+            return interaction.editReply(`Song added to queue. Queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
         }
 
         const connection = joinVoiceChannel({

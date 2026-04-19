@@ -25,9 +25,8 @@ export async function searchAndGetAudioResource(query: string): Promise<AudioRes
         });
         const resource = createAudioResource(process.stdout, {
             inputType: StreamType.Arbitrary,
-            inlineVolume: true 
+            inlineVolume: true,
         });
-        
         resource.playStream.on('error', (err) => { console.log("Killing process due to ERROR:",err); process.kill() });
         resource.playStream.on('end', () => { console.log("Killing process. Playing ended."); process.kill() });
 

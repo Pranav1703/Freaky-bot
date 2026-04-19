@@ -35,7 +35,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         return interaction.reply("queue is empty. No audio resource to resume playing.")
     }
     if(guildPlayer.player.state.status === AudioPlayerStatus.Playing){
-        return interaction.reply("played is already in 'playing' state.")
+        return interaction.reply("player is already in 'playing' state.")
     }
     guildPlayer.player.unpause()
     interaction.reply("Resumed Playing")
