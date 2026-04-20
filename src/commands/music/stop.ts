@@ -32,19 +32,20 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
     const player = playerHandler.player
 
-    const end = player.stop()
-    if(!end) {
-        console.log("failed to stop playing.")
-    }
-
     if(player.state.status !== AudioPlayerStatus.Idle){
         const currentResource = player.state.resource
         if(currentResource.metadata){
-            const metadata = currentResource.metadata as Metadata
+            const metadata = (currentResource.metadata as Metadata)
             metadata.process.kill('SIGKILL')
             console.log("Forcibly killed active yt-dlp process.");
         }
     }
+    
+    const end = player.stop()
+    if(!end) {
+        console.log("failed to stop playing.")
+    }
     playerHandler.queue = []
+    
     interaction.reply("Player stopped. Queue is cleared.")
 }

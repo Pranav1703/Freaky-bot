@@ -44,6 +44,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     if(player.state.status === AudioPlayerStatus.Idle){
         return interaction.reply("player is idle.  Cant set volume.")
     }
+
     const volumeConfig = player.state.resource.volume
     if(!volumeConfig){
         return interaction.reply("cant set volume. server error")
