@@ -17,12 +17,12 @@ export async function execute(interaction:ChatInputCommandInteraction) {
             content: "You must be in a voice channel to use this command!",
         });
     }
-    await interaction.deferReply();
+
     if (
     interaction.guild!.members.me!.voice.channel &&
     interaction.guild!.members.me!.voice.channel !== channel
     ) {
-        return interaction.editReply(
+        return interaction.reply(
           'I am already playing in a different voice channel!',
         );
     }
@@ -30,8 +30,8 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const guildId = interaction.guildId!
 
     const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-    if(guildPlayer.player.state.status === AudioPlayerStatus.Playing){
-        return interaction.reply("player is already in 'paused' state.")
+    if(guildPlayer.player.state.status === AudioPlayerStatus.Paused){
+        return interaction.reply("player is already paused.")
     }
     guildPlayer.player.pause()
     interaction.reply("player paused.")

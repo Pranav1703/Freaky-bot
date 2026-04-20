@@ -15,7 +15,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
             content: "You must be in a voice channel to use this command!",
         });
     }
-    await interaction.deferReply();
+
     if (
     interaction.guild!.members.me!.voice.channel &&
     interaction.guild!.members.me!.voice.channel !== channel

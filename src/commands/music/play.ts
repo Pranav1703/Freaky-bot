@@ -26,24 +26,25 @@ export async function execute(interaction:ChatInputCommandInteraction){
             content: "You must be in a voice channel to use this command!",
         });
     }
-    await interaction.deferReply();
+    
     if (
     interaction.guild!.members.me!.voice.channel &&
     interaction.guild!.members.me!.voice.channel !== channel
     ) {
-        return interaction.editReply(
+        return interaction.reply(
           'I am already playing in a different voice channel!',
         );
     }
 
     const guildId = interaction.guildId!
     const query = interaction.options.getString("query") as string;
-    
+
+    await interaction.deferReply();
     try {
         const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
         playerHandler.queue.push(query)
 
-        if(playerHandler.player.state.status  === AudioPlayerStatus.Playing){
+        if(playerHandler.player.state.status  === AudioPlayerStatus.Playing || playerHandler.player.state.status  === AudioPlayerStatus.Paused){
             return interaction.editReply(`Song added to queue. queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
         }
 
@@ -56,7 +57,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         const nextQuery = playerHandler.queue.shift()
         if(!nextQuery) return interaction.editReply("queue emtpy.")
         
-        const audioStream = await searchAndCreateAudioStream(query)
+        const audioStream = await searchAndCreateAudioStream(nextQuery)
         if(!audioStream){
             interaction.editReply("server error. Cant search or create audio resource for player.")
             return
