@@ -38,8 +38,8 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const Val = interaction.options.getNumber("value") as number
     const volumeVal = Val / 100
 
-    const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-    const player = guildPlayer.player
+    const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
+    const player = playerHandler.player
 
     if(player.state.status === AudioPlayerStatus.Idle){
         return interaction.reply("player is idle.  Cant set volume.")
@@ -49,5 +49,8 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         return interaction.reply("cant set volume. server error")
     }
     volumeConfig.setVolumeLogarithmic(volumeVal)
-    interaction.reply(`Volume is set to ${Val}%.`)
+
+    playerHandler.volume = volumeVal
+
+    interaction.reply(`Player volume is set to ${Val}%.`)
 }

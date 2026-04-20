@@ -29,9 +29,9 @@ export async function execute(interaction:ChatInputCommandInteraction) {
 
     const guildId = interaction.guildId!
     
-    const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-    const queue = guildPlayer.queue
-    const player = guildPlayer.player
+    const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
+    const queue = playerHandler.queue
+    const player = playerHandler.player
 
     const nextSongQuery = queue.shift()
     if(!nextSongQuery) return interaction.reply("queue is empty.")

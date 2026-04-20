@@ -41,11 +41,11 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
     await interaction.deferReply();
     try {
-        const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-        guildPlayer.queue.push(query)
+        const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
+        playerHandler.queue.push(query)
 
-        if(guildPlayer.player.state.status  === AudioPlayerStatus.Playing || guildPlayer.player.state.status  === AudioPlayerStatus.Paused){
-            return interaction.editReply(`Song added to queue. queue LENGTH: ${guildPlayer.queue.length}`) // later add song name and additional info after fetching metadata
+        if(playerHandler.player.state.status  === AudioPlayerStatus.Playing || playerHandler.player.state.status  === AudioPlayerStatus.Paused){
+            return interaction.editReply(`Song added to queue. queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
         }
 
         const connection = joinVoiceChannel({
@@ -54,7 +54,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
             adapterCreator: channel.guild.voiceAdapterCreator!
         })
 
-        const nextQuery = guildPlayer.queue.shift()
+        const nextQuery = playerHandler.queue.shift()
         if(!nextQuery) return interaction.editReply("queue emtpy.")
         
         const audioStream = await searchAndCreateAudioStream(nextQuery)
@@ -62,12 +62,14 @@ export async function execute(interaction:ChatInputCommandInteraction){
             interaction.editReply("server error. Cant search or create audio resource for player.")
             return
         }
-        
-        connection.subscribe(guildPlayer.player)
-        guildPlayer.player.play(audioStream)
 
-        addAudioPlayerListeners(guildPlayer.player, connection, guildId)
-        interaction.editReply(`playing from queue(LENGTH: ${guildPlayer.queue.length})`)
+        connection.subscribe(playerHandler.player)
+        if(playerHandler.volume!== undefined) audioStream.volume?.setVolumeLogarithmic(playerHandler.volume)
+
+        playerHandler.player.play(audioStream)
+
+        addAudioPlayerListeners(playerHandler.player, connection, guildId)
+        interaction.editReply(`playing from queue(LENGTH: ${playerHandler.queue.length})`)
     } catch (error) {
         console.log("error while playing: ",error)
     } 

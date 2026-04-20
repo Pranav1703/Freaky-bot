@@ -14,10 +14,10 @@ declare module "discord.js" {
 }
 
 export type FgRes = {
-    Title: string,
-    MagnetLink: string,
+    Title: string;
+    MagnetLink: string;
 }
 
 export type Metadata = {
-    process: ChildProcessWithoutNullStreams
+    process: ChildProcessWithoutNullStreams;
 }

@@ -30,12 +30,12 @@ export async function execute(interaction:ChatInputCommandInteraction) {
 
     const guildId = interaction.guildId!
 
-    const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
+    const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
 
-    if(guildPlayer.player.state.status === AudioPlayerStatus.Playing){
+    if(playerHandler.player.state.status === AudioPlayerStatus.Playing){
         return interaction.reply("player is already in 'playing' state.")
     }
-    guildPlayer.player.unpause()
+    playerHandler.player.unpause()
     interaction.reply("Resumed Playing")
 }
 

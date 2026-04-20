@@ -2,7 +2,8 @@ import { AudioPlayer, AudioResource, createAudioPlayer, NoSubscriberBehavior } f
 
 type PlayerHandler = {
     player: AudioPlayer;
-    queue: string[]
+    queue: string[];
+    volume: number | undefined;
 }
 
 class GuildQueueManager {
@@ -23,9 +24,10 @@ class GuildQueueManager {
             });
             gq = {
                 player: newPlayer,
-                queue: []
+                queue: [],
+                volume: undefined
             }
-            this.guildMap.set(guildId,gq)
+            this.guildMap.set(guildId, gq)
         }
         return gq
     }

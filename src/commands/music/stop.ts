@@ -29,8 +29,8 @@ export async function execute(interaction:ChatInputCommandInteraction) {
 
     const guildId = interaction.guildId!
     
-    const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-    const player = guildPlayer.player
+    const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
+    const player = playerHandler.player
 
     const end = player.stop()
     if(!end) {
@@ -45,6 +45,6 @@ export async function execute(interaction:ChatInputCommandInteraction) {
             console.log("Forcibly killed active yt-dlp process.");
         }
     }
-    guildPlayer.queue = []
+    playerHandler.queue = []
     interaction.reply("Player stopped. Queue is cleared.")
 }
