@@ -1,7 +1,7 @@
 import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import { spawn } from "child_process";
 
-export async function searchAndCreateAudioStream(query: string): Promise<AudioResource<null> | undefined>{
+export async function searchAndCreateAudioStream(query: string): Promise<AudioResource<any> | undefined>{
     try {
         const target = query.startsWith('http') ? query : `ytsearch1:${query}`;
 
