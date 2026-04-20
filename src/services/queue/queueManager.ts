@@ -2,7 +2,7 @@ import { AudioPlayer, AudioResource, createAudioPlayer, NoSubscriberBehavior } f
 
 type PlayerHandler = {
     player: AudioPlayer;
-    queue: AudioResource[]
+    queue: string[]
 }
 
 class GuildQueueManager {

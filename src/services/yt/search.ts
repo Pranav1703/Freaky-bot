@@ -1,7 +1,7 @@
 import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import { spawn } from "child_process";
 
-export async function searchAndGetAudioResource(query: string): Promise<AudioResource<null> | undefined>{
+export async function searchAndCreateAudioStream(query: string): Promise<AudioResource<null> | undefined>{
     try {
         const target = query.startsWith('http') ? query : `ytsearch1:${query}`;
 
@@ -33,7 +33,7 @@ export async function searchAndGetAudioResource(query: string): Promise<AudioRes
         return resource
 
     } catch (error) {
-        console.log("cant create audio resource: ",error)
+        console.log("cant create a active audio stream: ",error)
         return
     }
 }

@@ -1,9 +1,10 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import queueManager from "../../services/queue/queueManager.js";
+import { searchAndCreateAudioStream } from "../../services/yt/search.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("skip")
-                        .setDescription("Skips the currently playing track.")
+                        .setDescription("Skips the current song.")
 
 export async function execute(interaction:ChatInputCommandInteraction) {
 
@@ -32,9 +33,14 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const queue = guildPlayer.queue
     const player = guildPlayer.player
 
-    const nextSong = queue.shift()
-    if(!nextSong) return interaction.reply("queue is empty.")
+    const nextSongQuery = queue.shift()
+    if(!nextSongQuery) return interaction.reply("queue is empty.")
+    
+    const audioStream = await searchAndCreateAudioStream(nextSongQuery)
+    if(!audioStream){
+        interaction.editReply("server error. Cant search or create audio resource for player.")
+        return
+    }
+    player.play(audioStream)
     interaction.reply("Skipped Current song. Playing next song in the queue")
-    player.play(nextSong)
-
 }

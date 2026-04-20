@@ -4,7 +4,7 @@ import { AudioPlayerStatus } from "@discordjs/voice";
 
 export const data = new SlashCommandBuilder()
                         .setName("pause")
-                        .setDescription("Pause the currently playing Track.")
+                        .setDescription("Pauses currently playing track.")
 
 export async function execute(interaction:ChatInputCommandInteraction) {
 

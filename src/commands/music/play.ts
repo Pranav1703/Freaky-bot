@@ -1,12 +1,12 @@
 import { AudioPlayerStatus, joinVoiceChannel } from "@discordjs/voice";
 import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import { searchAndGetAudioResource } from "../../services/yt/search.js";
+import { searchAndCreateAudioStream } from "../../services/yt/search.js";
 import queueManager from "../../services/queue/queueManager.js";
 import { addAudioPlayerListeners } from "../../listeners/player.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
-                        .setDescription("Plays the song by searching the track using query.")
+                        .setDescription("Plays the music by searching the track using query.")
                         .addStringOption(option=>
                             option.setName("query")
                             .setDescription("url or name of the song")
@@ -41,16 +41,10 @@ export async function execute(interaction:ChatInputCommandInteraction){
     
     try {
         const playerHandler = queueManager.GetOrAddPlayerHandler(guildId)
-
-        const queryResource = await searchAndGetAudioResource(query)
-        if(!queryResource){
-            interaction.editReply("server error. Cant search or create audio resource for player.")
-            return
-        }
-        playerHandler.queue.push(queryResource)
+        playerHandler.queue.push(query)
 
         if(playerHandler.player.state.status  === AudioPlayerStatus.Playing){
-            return interaction.editReply(`Song added to queue. Queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
+            return interaction.editReply(`Song added to queue. queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
         }
 
         const connection = joinVoiceChannel({
@@ -59,14 +53,20 @@ export async function execute(interaction:ChatInputCommandInteraction){
             adapterCreator: channel.guild.voiceAdapterCreator!
         })
 
-        const resource = playerHandler.queue.shift()
-        if(!resource) return interaction.editReply("queue emtpy.")
-
+        const nextQuery = playerHandler.queue.shift()
+        if(!nextQuery) return interaction.editReply("queue emtpy.")
+        
+        const audioStream = await searchAndCreateAudioStream(query)
+        if(!audioStream){
+            interaction.editReply("server error. Cant search or create audio resource for player.")
+            return
+        }
+        
         connection.subscribe(playerHandler.player)
-        playerHandler.player.play(resource)
+        playerHandler.player.play(audioStream)
 
         addAudioPlayerListeners(playerHandler.player, connection, guildId)
-        interaction.editReply(`playing from queue(length: ${playerHandler.queue.length})`)
+        interaction.editReply(`playing from queue(LENGTH: ${playerHandler.queue.length})`)
     } catch (error) {
         console.log("error while playing: ",error)
     } 
