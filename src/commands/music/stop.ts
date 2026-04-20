@@ -1,5 +1,7 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
 import queueManager from "../../services/queue/queueManager.js";
+import { AudioPlayerStatus } from "@discordjs/voice";
+import { Metadata } from "../../types/types.js";
  
 export const data = new SlashCommandBuilder()
                         .setName("stop")
@@ -35,6 +37,14 @@ export async function execute(interaction:ChatInputCommandInteraction) {
         console.log("failed to stop playing.")
     }
 
+    if(player.state.status !== AudioPlayerStatus.Idle){
+        const currentResource = player.state.resource
+        if(currentResource.metadata){
+            const metadata = currentResource.metadata as Metadata
+            metadata.process.kill('SIGKILL')
+            console.log("Forcibly killed active yt-dlp process.");
+        }
+    }
     guildPlayer.queue = []
     interaction.reply("Player stopped. Queue is cleared.")
 }

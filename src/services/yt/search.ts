@@ -1,7 +1,9 @@
 import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import { spawn } from "child_process";
+import { Metadata } from "../../types/types.js";
 
-export async function searchAndCreateAudioStream(query: string): Promise<AudioResource<any> | undefined>{
+
+export async function searchAndCreateAudioStream(query: string): Promise<AudioResource<Metadata> | undefined>{
     try {
         const target = query.startsWith('http') ? query : `ytsearch1:${query}`;
 
@@ -26,9 +28,10 @@ export async function searchAndCreateAudioStream(query: string): Promise<AudioRe
         const resource = createAudioResource(process.stdout, {
             inputType: StreamType.Arbitrary,
             inlineVolume: true,
+            metadata: { process }
         });
-        resource.playStream.on('error', (err) => { console.log("Killing process due to ERROR:",err); process.kill() });
-        resource.playStream.on('end', () => { console.log("Killing process. Playing ended."); process.kill() });
+        resource.playStream.on('error', (err) => { console.log("Killing process due to ERROR:",err); process.kill('SIGKILL') });
+        resource.playStream.on('end', () => { console.log("Killing process. Playing ended."); process.kill('SIGKILL') });
 
         return resource
 

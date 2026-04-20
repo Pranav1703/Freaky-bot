@@ -12,5 +12,5 @@ export const data = new SlashCommandBuilder()
                             );
 
 export async function execute(interaction:ChatInputCommandInteraction){
-
+    interaction.reply("ntg to test.")
 }

@@ -31,7 +31,7 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const guildId = interaction.guildId!
 
     const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
-    if(guildPlayer.queue.length===0 && guildPlayer.player.state.status  !== AudioPlayerStatus.Playing){
+    if(guildPlayer.player.state.status  !== AudioPlayerStatus.Playing){
         return interaction.reply("queue is empty. No audio resource to resume playing.")
     }
     if(guildPlayer.player.state.status === AudioPlayerStatus.Playing){
