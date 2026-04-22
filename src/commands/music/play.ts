@@ -68,12 +68,12 @@ export async function execute(interaction:ChatInputCommandInteraction){
         if(playerHandler.volume!== undefined) audioStream.volume?.setVolumeLogarithmic(playerHandler.volume)
         
         const metadata = audioStream.metadata
-
         const songEmbed = createSongEmbed(metadata.title, metadata.duration, playerHandler.queue.length, metadata.thumbnail)
+
+        addAudioPlayerListeners(playerHandler.player, connection, interaction ,guildId)
         playerHandler.player.play(audioStream)
 
-        addAudioPlayerListeners(playerHandler.player, connection, guildId)
-        interaction.editReply(`playing from queue(LENGTH: ${playerHandler.queue.length})`)
+        interaction.editReply({embeds: [songEmbed]})
     } catch (error) {
         console.log("error while playing: ",error)
     } 

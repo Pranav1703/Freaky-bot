@@ -14,7 +14,6 @@ export default function createSongEmbed(title: string, duration: string, queueLe
               value: "",
               inline: false
             },
-
         )
         .setImage(thumbnail)
         .setColor("#54e8e5")
