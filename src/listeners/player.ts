@@ -21,7 +21,7 @@ export const addAudioPlayerListeners= async(player: AudioPlayer, conn: VoiceConn
                 const songEmbed = createSongEmbed(metadata.title, metadata.duration, guildPlayer.queue.length, metadata.thumbnail)
                 player.play(nextSongStream)
 
-                interaction.reply({embeds: [songEmbed]})
+                interaction.followUp({embeds: [songEmbed]})
             }else{
                 conn.disconnect()
             }

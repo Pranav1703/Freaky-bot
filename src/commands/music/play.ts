@@ -36,7 +36,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
           'I am already playing in a different voice channel!',
         );
     }
-
+    
     const guildId = interaction.guildId!
     const query = interaction.options.getString("query") as string;
 
@@ -46,7 +46,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         playerHandler.queue.push(query)
 
         if(playerHandler.player.state.status  === AudioPlayerStatus.Playing || playerHandler.player.state.status  === AudioPlayerStatus.Paused){
-            return interaction.editReply(`Song added to queue. queue LENGTH: ${playerHandler.queue.length}`) // later add song name and additional info after fetching metadata
+            return interaction.editReply(`Song added to queue. LENGTH: ${playerHandler.queue.length}`)
         }
 
         const connection = joinVoiceChannel({
