@@ -1,6 +1,8 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import queueManager from "../../services/queue/queueManager.js";
-import { searchAndCreateAudioStream } from "../../services/yt/search.js";
+import queueManager from "../../services/queueManager.js";
+import { searchAndCreateAudioStream } from "../../services/search.js";
+import { AudioPlayerStatus } from "@discordjs/voice";
+import { Metadata } from "../../types/types.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("skip")
@@ -33,14 +35,18 @@ export async function execute(interaction:ChatInputCommandInteraction) {
     const queue = playerHandler.queue
     const player = playerHandler.player
 
-    const nextSongQuery = queue.shift()
-    if(!nextSongQuery) return interaction.reply("queue is empty.")
-    
-    const audioStream = await searchAndCreateAudioStream(nextSongQuery)
-    if(!audioStream){
-        interaction.reply("server error. Cant search or create audio resource for player.")
-        return
+    if (player.state.status === AudioPlayerStatus.Idle) {
+        return await interaction.reply("no song to skip. Player is idle.");
     }
-    player.play(audioStream)
+    
+    const currentResource = player.state.resource;
+    if (currentResource?.metadata) {
+        const metadata = (currentResource.metadata as Metadata);
+        metadata.process.kill('SIGKILL');
+        console.log("Forcibly killed active yt-dlp process for skip.");
+    }
+
+    player.stop();
+
     interaction.reply("Skipped Current song. Playing next song in the queue")
 }

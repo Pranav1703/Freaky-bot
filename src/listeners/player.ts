@@ -1,6 +1,6 @@
 import { AudioPlayer, AudioPlayerStatus, VoiceConnection } from "@discordjs/voice";
-import queueManager from "../services/queue/queueManager.js";
-import { searchAndCreateAudioStream } from "../services/yt/search.js";
+import queueManager from "../services/queueManager.js";
+import { searchAndCreateAudioStream } from "../services/search.js";
 
 
 export const addAudioPlayerListeners= async(player: AudioPlayer, conn: VoiceConnection, guildId: string) => {

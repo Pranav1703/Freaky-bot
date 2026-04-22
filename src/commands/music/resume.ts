@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import queueManager from "../../services/queue/queueManager.js";
+import queueManager from "../../services/queueManager.js";
 import { AudioPlayerStatus } from "@discordjs/voice";
 
 export const data = new SlashCommandBuilder()

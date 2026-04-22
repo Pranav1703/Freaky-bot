@@ -1,8 +1,9 @@
 import { AudioPlayerStatus, joinVoiceChannel } from "@discordjs/voice";
 import { ChatInputCommandInteraction,  GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import { searchAndCreateAudioStream } from "../../services/yt/search.js";
-import queueManager from "../../services/queue/queueManager.js";
+import { searchAndCreateAudioStream } from "../../services/search.js";
+import queueManager from "../../services/queueManager.js";
 import { addAudioPlayerListeners } from "../../listeners/player.js";
+import createSongEmbed from "../../services/embedBuilder.js";
 
 export const data = new SlashCommandBuilder()
                         .setName("play")
@@ -65,7 +66,10 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
         connection.subscribe(playerHandler.player)
         if(playerHandler.volume!== undefined) audioStream.volume?.setVolumeLogarithmic(playerHandler.volume)
+        
+        const metadata = audioStream.metadata
 
+        const songEmbed = createSongEmbed(metadata.title, metadata.duration, playerHandler.queue.length, metadata.thumbnail)
         playerHandler.player.play(audioStream)
 
         addAudioPlayerListeners(playerHandler.player, connection, guildId)

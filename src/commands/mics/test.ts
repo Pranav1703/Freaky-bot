@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, VoiceBasedChannel } from "discord.js";
-import { searchAndCreateAudioStream } from "../../services/yt/search.js";
+import { searchAndCreateAudioStream } from "../../services/search.js";
 import { createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior } from "@discordjs/voice";
 
 
