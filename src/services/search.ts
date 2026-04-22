@@ -38,12 +38,13 @@ export async function searchAndCreateAudioStream(query: string): Promise<AudioRe
                 reject(err);
             });
         });
-        
+
         console.log('Song Title:', songMetadata.title);
         console.log('Duration:', songMetadata.duration);
         console.log("thumbnail", songMetadata.thumbnail)
+
         const minutes = Math.floor(songMetadata.duration / 60);
-        const seconds = songMetadata.duration % 6
+        const seconds = songMetadata.duration % 60
         const duration = `${minutes}:${seconds}`
         const process = spawn('yt-dlp', [
             target,
