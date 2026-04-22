@@ -22,6 +22,5 @@ export type Metadata = {
     process: ChildProcessWithoutNullStreams;
     title: string;
     duration: string;
-    queueLen: string;
     thumbnail: string;
 }
