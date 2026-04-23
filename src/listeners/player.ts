@@ -1,11 +1,11 @@
 import { AudioPlayer, AudioPlayerStatus, VoiceConnection } from "@discordjs/voice";
 import queueManager from "../services/queueManager.js";
 import { searchAndCreateAudioStream } from "../services/search.js";
-import { CacheType, ChatInputCommandInteraction } from "discord.js";
+import { CacheType, ChatInputCommandInteraction, VoiceBasedChannel } from "discord.js";
 import createSongEmbed from "../services/embedBuilder.js";
 
 
-export const addAudioPlayerListeners= async(player: AudioPlayer, conn: VoiceConnection, interaction: ChatInputCommandInteraction<CacheType>,guildId: string) => {
+export const addAudioPlayerListeners= async(player: AudioPlayer, conn: VoiceConnection, channel: VoiceBasedChannel,guildId: string) => {
     const guildPlayer = queueManager.GetOrAddPlayerHandler(guildId)
     if (player.listeners('stateChange').length > 0) return;
     player.on('stateChange',async(oldState, newState)=>{
@@ -21,7 +21,7 @@ export const addAudioPlayerListeners= async(player: AudioPlayer, conn: VoiceConn
                 const songEmbed = createSongEmbed(metadata.title, metadata.duration, guildPlayer.queue.length, metadata.thumbnail)
                 player.play(nextSongStream)
 
-                interaction.followUp({embeds: [songEmbed]})
+                channel.send({embeds: [songEmbed]})
             }else{
                 conn.disconnect()
             }

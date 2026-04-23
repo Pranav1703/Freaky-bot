@@ -27,7 +27,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
             content: "You must be in a voice channel to use this command!",
         });
     }
-    
+
     if (
     interaction.guild!.members.me!.voice.channel &&
     interaction.guild!.members.me!.voice.channel !== channel
@@ -69,8 +69,8 @@ export async function execute(interaction:ChatInputCommandInteraction){
         
         const metadata = audioStream.metadata
         const songEmbed = createSongEmbed(metadata.title, metadata.duration, playerHandler.queue.length, metadata.thumbnail)
-
-        addAudioPlayerListeners(playerHandler.player, connection, interaction ,guildId)
+        
+        addAudioPlayerListeners(playerHandler.player, connection, channel ,guildId)
         playerHandler.player.play(audioStream)
 
         interaction.editReply({embeds: [songEmbed]})

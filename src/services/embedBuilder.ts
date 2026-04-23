@@ -10,7 +10,7 @@ export default function createSongEmbed(title: string, duration: string, queueLe
             inline: false
           },
             {
-              name: `Queue Length: ${queueLen}`,
+              name: `Remaining songs in queue: ${queueLen}`,
               value: "",
               inline: false
             },
