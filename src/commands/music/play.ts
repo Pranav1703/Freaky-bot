@@ -19,9 +19,9 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction:ChatInputCommandInteraction){
 
     const member = interaction.member as GuildMember
-    const channel = member.voice.channel as VoiceBasedChannel
+    const voiceChannel = member.voice.channel
 
-    if (!channel) {
+    if (!voiceChannel) {
         interaction.ephemeral = true
         return interaction.reply({
             content: "You must be in a voice channel to use this command!",
@@ -30,7 +30,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
 
     if (
     interaction.guild!.members.me!.voice.channel &&
-    interaction.guild!.members.me!.voice.channel !== channel
+    interaction.guild!.members.me!.voice.channel !== voiceChannel
     ) {
         return interaction.reply(
           'I am already playing in a different voice channel!',
@@ -50,9 +50,9 @@ export async function execute(interaction:ChatInputCommandInteraction){
         }
 
         const connection = joinVoiceChannel({
-            channelId: channel.id,
+            channelId: voiceChannel.id,
             guildId: interaction.guildId!,
-            adapterCreator: channel.guild.voiceAdapterCreator!
+            adapterCreator: voiceChannel.guild.voiceAdapterCreator!
         })
 
         const nextQuery = playerHandler.queue.shift()
@@ -70,7 +70,7 @@ export async function execute(interaction:ChatInputCommandInteraction){
         const metadata = audioStream.metadata
         const songEmbed = createSongEmbed(metadata.title, metadata.duration, playerHandler.queue.length, metadata.thumbnail)
         
-        addAudioPlayerListeners(playerHandler.player, connection, channel ,guildId)
+        addAudioPlayerListeners(playerHandler.player, connection, interaction ,guildId)
         playerHandler.player.play(audioStream)
 
         interaction.editReply({embeds: [songEmbed]})
