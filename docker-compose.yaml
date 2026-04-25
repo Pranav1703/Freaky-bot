@@ -1,5 +1,6 @@
 services:
   bot:
     build: .
+    container_name: freaky-bot
     env_file:
       - .env
