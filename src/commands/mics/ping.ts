@@ -56,12 +56,12 @@ export async function execute(interaction:ChatInputCommandInteraction){
         
         case "73.53.2532.53.01":
             interaction.reply({
-                content:`stop smoking.`
+                content:`stop smoking nga.`
             })
             break;
         case "rahult":
             interaction.reply({
-                content:`total living creatures in your basement: ${randomInt(100,1000)}`
+                content:`total living creatures in your basement: **${randomInt(100,1000)}.**`
             })
             break;
 

@@ -18,13 +18,15 @@ RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o 
 
 WORKDIR /app
 
+ENV PLAYWRIGHT_BROWSERS_PATH=0
+RUN npx playwright install --with-deps chromium
 COPY package.json package-lock.json ./
 
 RUN npm ci
 
 COPY . .
 
-RUN npx playwright install chromium
+
 
 RUN npm run build
 
