@@ -1,5 +1,5 @@
 {
-  "name": "freaky-bot",
+  "name": "whiplash",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -14,13 +14,13 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
+    "nodemon": "^3.1.14",
     "typescript": "^6.0.3"
   },
   "dependencies": {
     "@discordjs/voice": "^0.19.2",
     "discord.js": "^14.26.3",
     "dotenv": "^17.4.2",
-    "nodemon": "^3.1.14",
     "opusscript": "^0.1.1",
     "playwright": "^1.59.1"
   }

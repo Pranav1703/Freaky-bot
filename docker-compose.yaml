@@ -1,6 +1,6 @@
 services:
   bot:
     build: .
-    container_name: freaky-bot
+    container_name: whiplash
     env_file:
       - .env
