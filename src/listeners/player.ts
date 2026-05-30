@@ -1,7 +1,7 @@
 import { AudioPlayer, AudioPlayerStatus, VoiceConnection } from "@discordjs/voice";
 import queueManager from "../services/queueManager.js";
 import { searchAndCreateAudioStream } from "../services/search.js";
-import { ChatInputCommandInteraction, TextBasedChannel, VoiceBasedChannel } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import createSongEmbed from "../services/embedBuilder.js";
 
 
