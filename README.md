@@ -41,9 +41,14 @@ git clone https://github.com/Pranav1703/Freaky-bot.git
 npm run build
 ```
 
+3. install modules
+```
+npm ci
+```
+
 3. start
 ```bash
-node start
+npm start
 ```
 
 ## self host using docker
